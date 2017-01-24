@@ -1,6 +1,33 @@
 package gitlab_webhook_parse
 
-import "time"
+import (
+	"time"
+	"strings"
+)
+
+type customTime struct {
+	time.Time
+}
+
+func (t customTime) UnmarshalJSON(b []byte) (err error) {
+	layout := []string{
+		"2006-01-02 15:04:05 MST",
+		time.RFC3339,
+	}
+	s := strings.Trim(string(b), "\"")
+	if s == "null" {
+		t.Time = time.Time{}
+		return
+	}
+	for _, l := range (layout) {
+		t.Time, err = time.Parse(l, s)
+		if err == nil {
+			break
+		}
+	}
+	return
+}
+
 
 type IssueEvent struct {
 	ObjectKind       string `json:"object_kind"`
@@ -8,7 +35,7 @@ type IssueEvent struct {
 	Project          Project `json:"project"`
 	Repository       Repository `json:"repository"`
 	ObjectAttributes ObjectAttributes `json:"object_attributes"`
-	Assignee         Assignee `json:""assignee`
+	Assignee         Assignee `json:"assignee"`
 }
 
 type MergeRequestEvent struct {
@@ -85,8 +112,8 @@ type Issue struct {
 	AssigneeID  int `json:"assignee_id"`
 	AuthorID    int `json:"author_id"`
 	ProjectID   int `json:"project_id"`
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
+	CreatedAt   customTime `json:"created_at"`
+	UpdatedAt   customTime `json:"updated_at"`
 	Position    int `json:"position"`
 	BranchName  string `json:"branch_name"`
 	Description string `json:"description"`
@@ -100,9 +127,9 @@ type Build struct {
 	Stage         string `json:"stage"`
 	Name          string `json:"name"`
 	Status        string `json:"status"`
-	CreatedAt     time.Time `json:"created_at"`
-	StartedAt     time.Time `json:"started_at"`
-	FinishedAt    time.Time `json:"finished_at"`
+	CreatedAt     customTime `json:"created_at"`
+	StartedAt     customTime `json:"started_at"`
+	FinishedAt    customTime `json:"finished_at"`
 	When          string `json:"when"`
 	Manual        bool `json:"manual"`
 	User          User `json:"user"`
@@ -111,7 +138,7 @@ type Build struct {
 }
 
 type Artifactsfile struct {
-	Filename string `"filename"`
+	Filename string `json:"filename"`
 	Size     string `json:"size"`
 }
 
@@ -126,7 +153,7 @@ type Wiki struct {
 type Commit struct {
 	ID        string `json:"id"`
 	Message   string `json:"message"`
-	Timestamp string `json:"timestamp"`
+	Timestamp customTime `json:"timestamp"`
 	URL       string `json:"url"`
 	Author    Author `json:"author"`
 	Added     []string `json:"added"`
@@ -140,10 +167,10 @@ type Snippet struct {
 	Content         string `json:"content"`
 	AuthorID        int `json:"author_id"`
 	ProjectID       int `json:"project_id"`
-	CreatedAt       time.Time `json:"created_at"`
-	UpdatedAt       time.Time `json:"updated_at"`
+	CreatedAt       customTime `json:"created_at"`
+	UpdatedAt       customTime `json:"updated_at"`
 	FileName        string `json:"file_name"`
-	ExpiresAt       time.Time `json:"expires_at"`
+	ExpiresAt       customTime `json:"expires_at"`
 	Type            string `json:"type"`
 	VisibilityLevel int "visibility_level"
 }
@@ -184,8 +211,8 @@ type ObjectAttributes struct {
 	AssigneeID      int `json:"assignee_id"`
 	AuthorID        int `json:"author_id"`
 	ProjectID       int `json:"project_id"`
-	CreatedAt       time.Time `json:"created_at"`
-	UpdatedAt       time.Time `json:"updated_at"`
+	CreatedAt       customTime `json:"created_at"`
+	UpdatedAt       customTime `json:"updated_at"`
 	Position        int `json:"position"`
 	BranchName      string `json:"branch_name"`
 	Description     string `json:"description"`
@@ -196,7 +223,8 @@ type ObjectAttributes struct {
 	Action          string `json:"action"`
 	TargetBranch    string `json:"target_branch"`
 	SourceBranch    string `json:"source_branch"`
-	SourceProjectId string `json:"source_project_id"`
+	SourceProjectId int `json:"source_project_id"`
+	TargetProjectID int `json:"target_project_id"`
 	StCommits       string `json:"st_commits"`
 	MergeStatus     string `json:"merge_status"`
 	Content         string `json:"content"`
@@ -204,7 +232,7 @@ type ObjectAttributes struct {
 	Message         string `json:"message"`
 	Slug            string `json:"slug"`
 	Ref             string `json:"ref"`
-	Tag             string `json:"tag"`
+	Tag             bool `json:"tag"`
 	Sha             string `json:"sha"`
 	BeforeSha       string `json:"before_sha"`
 	Status          string `json:"status"`
@@ -212,7 +240,7 @@ type ObjectAttributes struct {
 	Duration        int `json:"duration"`
 	Note            string `json:"note"`
 	NotebookType    string `json:"noteable_type"`
-	At              time.Time `json:"attachment"`
+	At              customTime `json:"attachment"`
 	LineCode        string `json:"line_code"`
 	CommitID        string `json:"commit_id"`
 	NoteableID      int `json:"noteable_id"`
@@ -233,8 +261,8 @@ type MergeRequest struct {
 	AssigneeID      int `json:"assignee_id"`
 	AuthorID        int `json:"author_id"`
 	Title           string `json:"title"`
-	CreatedAt       time.Time `json:"created_at"`
-	UpdatedAt       time.Time `json:"updated_at"`
+	CreatedAt       customTime `json:"created_at"`
+	UpdatedAt       customTime `json:"updated_at"`
 	MilestoneID     int `json:"milestone_id"`
 	State           string `json:"state"`
 	MergeStatus     string `json:"merge_status"`
@@ -242,7 +270,7 @@ type MergeRequest struct {
 	IID             int `json:"iid"`
 	Description     string `json:"description"`
 	Position        int `json:"position"`
-	LockedAt        time.Time `"locked_at"`
+	LockedAt        customTime `"locked_at"`
 	Source          Source `json:"source"`
 	Target          Target `json:"target"`
 	LastCommit      LastCommit `json:"last_commit"`
@@ -304,7 +332,7 @@ type Target struct {
 type LastCommit struct {
 	ID        string `json:"id"`
 	Message   string `json:"message"`
-	Timestamp time.Time `json:"timestamp"`
+	Timestamp customTime `json:"timestamp"`
 	URL       string `json:"url"`
 	Author    Author `json:"author"`
 }

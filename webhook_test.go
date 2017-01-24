@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"encoding/json"
 	"testing"
-	"fmt"
 )
 
 func TestIssueEvent(t *testing.T){
@@ -19,11 +18,10 @@ func TestIssueEvent(t *testing.T){
 	if err != nil {
 		t.Errorf("cannot Unmarshal, %v", err)
 	}
-	fmt.Println(d)
 }
 
 func TestMergeRequestEvent(t *testing.T){
-	filename, _ := filepath.Abs("sampledata/merge_request.json")
+	filename, _ := filepath.Abs("sampledata/merge_request_event.json")
 	data, err := ioutil.ReadFile(filename)
 	if err != nil {
 		t.Errorf("file not found, %s", filename)
@@ -33,7 +31,6 @@ func TestMergeRequestEvent(t *testing.T){
 	if err != nil {
 		t.Errorf("cannot Unmarshal, %v", err)
 	}
-	fmt.Println(d)
 }
 
 func TestPipelineEvent(t *testing.T){
@@ -47,7 +44,6 @@ func TestPipelineEvent(t *testing.T){
 	if err != nil {
 		t.Errorf("cannot Unmarshal, %v", err)
 	}
-	fmt.Println(d)
 }
 
 func TestPushEvent(t *testing.T){
@@ -61,7 +57,6 @@ func TestPushEvent(t *testing.T){
 	if err != nil {
 		t.Errorf("cannot Unmarshal, %v", err)
 	}
-	fmt.Println(d)
 }
 
 func TestPTagEvent(t *testing.T){
@@ -75,7 +70,6 @@ func TestPTagEvent(t *testing.T){
 	if err != nil {
 		t.Errorf("cannot Unmarshal, %v", err)
 	}
-	fmt.Println(d)
 }
 
 func TestWikiPageEvent(t *testing.T){
@@ -89,7 +83,6 @@ func TestWikiPageEvent(t *testing.T){
 	if err != nil {
 		t.Errorf("cannot Unmarshal, %v", err)
 	}
-	fmt.Println(d)
 }
 
 func TestCommentEventSnippet(t *testing.T){
@@ -103,7 +96,6 @@ func TestCommentEventSnippet(t *testing.T){
 	if err != nil {
 		t.Errorf("cannot Unmarshal, %v", err)
 	}
-	fmt.Println(d)
 }
 
 func TestCommentEventCommit(t *testing.T){
@@ -117,7 +109,6 @@ func TestCommentEventCommit(t *testing.T){
 	if err != nil {
 		t.Errorf("cannot Unmarshal, %v", err)
 	}
-	fmt.Println(d)
 }
 func TestCommentEventIssue(t *testing.T){
 	filename, _ := filepath.Abs("sampledata/comment_event_issue.json")
@@ -130,7 +121,6 @@ func TestCommentEventIssue(t *testing.T){
 	if err != nil {
 		t.Errorf("cannot Unmarshal, %v", err)
 	}
-	fmt.Println(d)
 }
 func TestCommentEventMergeRequest(t *testing.T){
 	filename, _ := filepath.Abs("sampledata/comment_event_merge_request.json")
@@ -143,5 +133,4 @@ func TestCommentEventMergeRequest(t *testing.T){
 	if err != nil {
 		t.Errorf("cannot Unmarshal, %v", err)
 	}
-	fmt.Println(d)
 }
