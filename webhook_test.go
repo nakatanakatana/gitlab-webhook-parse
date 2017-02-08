@@ -84,6 +84,18 @@ func TestWikiPageEvent(t *testing.T){
 		t.Errorf("cannot Unmarshal, %v", err)
 	}
 }
+func TestBuildEvent(t *testing.T){
+	filename, _ := filepath.Abs("sampledata/build_event.json")
+	data, err := ioutil.ReadFile(filename)
+	if err != nil {
+		t.Errorf("file not found, %s", filename)
+	}
+	var d BuildEvent
+	err = json.Unmarshal(data, &d)
+	if err != nil {
+		t.Errorf("cannot Unmarshal, %v", err)
+	}
+}
 
 func TestCommentEventSnippet(t *testing.T){
 	filename, _ := filepath.Abs("sampledata/comment_event_code_snippet.json")

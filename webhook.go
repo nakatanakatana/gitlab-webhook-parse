@@ -28,7 +28,6 @@ func (t customTime) UnmarshalJSON(b []byte) (err error) {
 	return
 }
 
-
 type IssueEvent struct {
 	ObjectKind       string `json:"object_kind"`
 	User             User `json:"user"`
@@ -106,6 +105,26 @@ type CommentEvent struct {
 	Snippet          Snippet `json:"snippet"`
 }
 
+type BuildEvent struct {
+	ObjectKind        string `json:"object_kind"`
+	Ref               string  `json:"ref"`
+	Tag               bool `json:"tag"`
+	BeforeSha         string  `json:"before_sha"`
+	Sha               string  `json:"sha"`
+	BuildId           int `json:"build_id"`
+	BuildName         string  `json:"build_name"`
+	BuildStage        string  `json:"build_stage"`
+	BuildStatus       string  `json:"build_status"`
+	BuildStartedAt    customTime `json:"build_started_at"`
+	BuildFinishedAt   customTime `json:"build_finished_at"`
+	BuildDuration     int `json:"build_duration"`
+	BuildAllowFailure bool `json:"build_allow_failure"`
+	ProjectID         int `json:"project_id"`
+	ProjectName       string  `json:project_name"`
+	User              User `json:"user"`
+	Commit            BuildCommit `json:"commit"`
+	Repository        Repository `json"repository"`
+}
 type Issue struct {
 	ID          int `json:"id"`
 	Title       string `json:"title"`
@@ -159,6 +178,18 @@ type Commit struct {
 	Added     []string `json:"added"`
 	Modified  []string `json:"modified"`
 	Removed   []string `json:"removed"`
+}
+
+type BuildCommit struct {
+	ID          int `json:"id"`
+	Sha         string `json:"sha"`
+	Message     string `json:"message"`
+	AuthorName  string `json:"auuthor_name"`
+	AuthorEmail string `json:"author_email"`
+	Status      string `json:"status"`
+	Duration   int `json:"duration"`
+	StartedAt   customTime `json:"started_at"`
+	FinishedAt   customTime `json:"finished_at"`
 }
 
 type Snippet struct {
